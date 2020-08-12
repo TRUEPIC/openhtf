@@ -25,4 +25,7 @@ class TestRecordEncoder(json.JSONEncoder):
       dct = obj._asdict()
       dct['data'] = base64.standard_b64encode(obj.data).decode('utf-8')
       return dct
-    return super(TestRecordEncoder, self).default(obj)
+    elif isinstance(obj, bytes):
+      return base64.standard_b64encode(obj).decode('utf-8')
+    else:
+      return super(TestRecordEncoder, self).default(obj)
