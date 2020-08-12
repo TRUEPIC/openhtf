@@ -23,6 +23,7 @@ import openhtf
 from openhtf.output.callbacks import mfg_inspector
 from openhtf.output.proto import mfg_event_converter
 from openhtf.output.proto import mfg_event_pb2
+from openhtf.output.proto import test_runs_converter
 from openhtf.output.servers import pub_sub
 from openhtf.output.servers import web_gui_server
 from openhtf.util import conf
@@ -511,6 +512,14 @@ class HistoryAttachmentsHandler(BaseHistoryHandler):
       # TODO - could use sha1 here to check?
       desired_real = [a for a in me.attachment if a.name == attachment_name]
       if len(desired_real) > 0:
+        try:
+          mimetype = next(
+            k for k, v
+            in test_runs_converter.MIMETYPE_MAP.items()
+            if v == desired_real[0].type)
+        except StopIteration:
+          mimetype = "application/octet-stream"
+        self.set_header("Content-Type", mimetype)
         self.write(desired_real[0].value_binary)
         self.set_status(200)
       else:
