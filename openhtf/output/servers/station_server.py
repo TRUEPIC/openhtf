@@ -462,6 +462,8 @@ class HistoryListHandler(BaseHistoryHandler):
           'start_time_millis': start_time_millis,
       })
 
+    history_items.sort(key=lambda item: item['start_time_millis'], reverse=True)
+
     # Wrap value in a dict because writing a list directly is prohibited.
     self.write({'data': history_items})
 
